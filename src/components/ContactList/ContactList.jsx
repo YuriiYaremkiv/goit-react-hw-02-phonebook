@@ -9,7 +9,9 @@ export const ContactList = ({ contacts }) => {
             <p>
               {name}: {number}
             </p>
-            <button type="button">Delete</button>
+            <button className={css.contactList__button} type="button">
+              Delete
+            </button>
           </li>
         );
       })}
