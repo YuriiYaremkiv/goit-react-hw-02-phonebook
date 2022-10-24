@@ -1,0 +1,25 @@
+.container {
+  margin: 0 auto;
+  width: 600px;
+}
+
+form {
+  padding: 20px;
+
+  border: 1px solid #000;
+  border-radius: 12px;
+}
+
+.formSubmit__label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.formSubmit__input {
+    margin-top: 8px;
+}
+
+
+input {
+  display: block;
+}
