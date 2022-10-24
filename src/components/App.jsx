@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import css from './app.module.scss';
 
+import { ContactList } from '../components/ContactList/ContactList';
+
 export class App extends Component {
   state = {
     contacts: [
@@ -47,6 +49,11 @@ export class App extends Component {
         </form>
 
         <h2>Contacts</h2>
+        <label>
+          Find contacts by name:
+          <input type="text"></input>
+        </label>
+        <ContactList contacts={this.state.contacts} />
       </div>
     );
   }
