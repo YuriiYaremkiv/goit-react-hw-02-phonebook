@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import css from './app.module.scss';
 
+import { ContactForm } from '../components/ContactForm/ContactForm';
+import { Filter } from './Filter/Filter';
 import { ContactList } from '../components/ContactList/ContactList';
+
+const shortid = require('shortid');
 
 export class App extends Component {
   state = {
@@ -12,48 +16,59 @@ export class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    name: '',
-    number: '',
+  };
+
+  handleSubmit = ({ name, number }) => {
+    if (
+      this.state.contacts.find(
+        contact => contact.name.toLocaleLowerCase() === name.toLocaleLowerCase()
+      )
+    ) {
+      alert('This contact already exists');
+      return;
+    }
+    const contact = {
+      id: shortid.generate(),
+      name,
+      number,
+    };
+
+    this.setState(prevState => ({
+      contacts: [contact, ...prevState.contacts],
+    }));
+  };
+
+  handleFilter = e => {
+    this.setState({ filter: e.target.value.trim().toLocaleLowerCase() });
+  };
+
+  deleteContact = contactId => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(
+          contact => contact.id !== contactId
+        ),
+      };
+    });
   };
 
   render() {
+    const filterContact = this.state.contacts.filter(contact =>
+      contact.name.toLocaleLowerCase().includes(this.state.filter)
+    );
     return (
       <div className={css.container}>
-        <h1>Phonebook</h1>
-        <form className={css.formSubmit}>
-          <label className={css.formSubmit__label}>
-            Name
-            <input
-              className={css.formSubmit__input}
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-            />
-          </label>
-          <label className={css.formSubmit__label}>
-            Number
-            <input
-              className={css.formSubmit__input}
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
-            />
-          </label>
-          <button className={css.formSubmit__button} type="submit">
-            Add contact
-          </button>
-        </form>
+        <h1 className={css.title}>Phonebook</h1>
+        <ContactForm onSubmit={this.handleSubmit} />
 
         <h2>Contacts</h2>
-        <label>
-          Find contacts by name:
-          <input type="text"></input>
-        </label>
-        <ContactList contacts={this.state.contacts} />
+        <div className={css.contacts__container}>
+          <Filter onChange={this.handleFilter} />
+          <ContactList
+            contacts={filterContact}
+            delContact={this.deleteContact}
+          />
+        </div>
       </div>
     );
   }
