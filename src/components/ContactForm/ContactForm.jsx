@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import css from './ContactForm.module.scss';
 
 const INITIAL_STATE = {
@@ -15,7 +16,19 @@ export class ContactForm extends Component {
   };
 
   handleSubmit = e => {
+    const contacts = this.props.contacts;
     e.preventDefault();
+
+    if (
+      contacts.find(
+        ({ name }) =>
+          name.toLocaleLowerCase() === this.state.name.toLocaleLowerCase()
+      )
+    ) {
+      alert('This contact already exists');
+      return;
+    }
+
     this.props.onSubmit({ ...this.state });
     this.reset();
   };
@@ -60,3 +73,8 @@ export class ContactForm extends Component {
     );
   }
 }
+
+ContactForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  contacts: PropTypes.array.isRequired,
+};
